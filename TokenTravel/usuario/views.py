@@ -13,6 +13,8 @@ from rolepermissions.roles import assign_role
 from django.contrib.auth.hashers import make_password
 import django
 django.setup()
+
+
 def cadastro_motorista(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -61,6 +63,8 @@ def cadastro_motorista(request):
         messages.success(request, 'Cadastro realizado com sucesso!')
         return redirect(login_motorista)
     return render(request, 'cadastro_motoristas.html')
+
+
 def cadastro_passageiro(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -101,6 +105,8 @@ def cadastro_passageiro(request):
         messages.success(request, 'Cadastro realizado com sucesso!')
         return redirect(login_passageiro)
     return render(request, 'cadastro_usuarios.html')
+
+
 def login_motorista(request):
     if request.method == "GET":
         return render(request, 'login_motorista.html')
@@ -119,6 +125,8 @@ def login_motorista(request):
         else:
             messages.error(request, 'Usuário ou senha incorretos.')
     return render(request, 'login_motorista.html')
+
+
 def login_passageiro(request):
     if request.method == "GET":
         return render(request, 'login_usuario.html')
@@ -137,6 +145,8 @@ def login_passageiro(request):
         else:
             messages.error(request, 'Usuário ou senha incorretos.')
     return render(request, 'login_usuario.html')
+
+
 @login_required(login_url='login/motorista')
 def criar_rota(request):
     if request.method == 'POST':
@@ -159,10 +169,14 @@ def criar_rota(request):
     else:
         form = RotaViagemForm()
     return render(request, 'criar_rota.html', {'form': form})
+
+
 @login_required(login_url='login/motorista')
 def lista_rotas(request):
     rotas = RotaViagem.objects.filter(motorista=request.user.motorista)
     return render(request, 'lista_rotas.html', {'rotas': rotas})
+
+
 @login_required(login_url='login/motorista')
 def atualizar_rota(request, id):
     rota = get_object_or_404(RotaViagem, id=id)
@@ -172,7 +186,8 @@ def atualizar_rota(request, id):
         if form.is_valid():
             rota = form.save(commit=False)
             rota.motorista = request.user.motorista
-            horario_ida_str = form.cleaned_data['horario_ida'].strftime('%Y-%m-%dT%H:%M:%S%z')
+            horario_ida_str = form.cleaned_data['horario_ida'].strftime(
+                '%Y-%m-%dT%H:%M:%S%z')
             horario_ida = datetime.fromisoformat(horario_ida_str)
             rota.horario_ida = horario_ida
             rota.tipo_veiculo = request.POST.get('tipo_veiculo')
@@ -187,12 +202,16 @@ def atualizar_rota(request, id):
     else:
         form = RotaViagemForm(instance=rota)
     return render(request, 'atualizar_rota.html', {'form': form, 'rota': rota})
+
+
 @login_required(login_url='login/motorista')
 def deletar_rota(request, id):
-    rota = get_object_or_404(RotaViagem, pk=id, motorista=request.user.motorista)
+    rota = get_object_or_404(
+        RotaViagem, pk=id, motorista=request.user.motorista)
     dias_em_comum = []
     for dia in rota.dias_semana.all():
-        rotas_com_dia = RotaViagem.objects.filter(dias_semana=dia).exclude(pk=rota.pk)
+        rotas_com_dia = RotaViagem.objects.filter(
+            dias_semana=dia).exclude(pk=rota.pk)
         if rotas_com_dia.exists():
             dias_em_comum.append(dia)
     if request.method == 'POST':
@@ -207,33 +226,48 @@ def deletar_rota(request, id):
     else:
         context = {'rota': rota, 'dias_em_comum': dias_em_comum}
         return render(request, 'deletar_rota.html', context)
+
+
 @login_required(login_url='login/motorista')
 def menu_motorista(request):
     motorista = request.user.motorista
     rotas = RotaViagem.objects.filter(motorista=motorista)
     return render(request, 'menu_motorista.html', {'motorista': motorista, 'rotas': rotas})
+
+
 @login_required(login_url='login/passageiro')
 def menu_passageiro(request):
     passageiro = request.user.passageiro
     return render(request, 'menu_passageiro.html', {'passageiro': passageiro})
+
+
 @login_required(login_url='login')
 def logout_view(request):
     logout(request)
     return redirect(menu)
+
+
 def portfolio(request):
     return render(request, 'portfolio.html')
+
+
 def home(request):
     return render(request, 'home.html')
+
+
 def menu(request):
-    exibir_h3 = True  
+    exibir_h3 = True
     return render(request, 'menu.html', {'exibir_h3': exibir_h3})
+
+
 def pesquisa(request):
     if request.method == 'POST':
         origem = request.POST.get('end_inicial')
         destino = request.POST.get('end_final')
         api_key = '2inWVROkYfeGcxFvh3ueKhAjYeL7XPmG'
         dia_semana_nome = request.POST.get('dia_da_semana')
-        dia_semana_obj = get_object_or_404(DiaSemana, nome__iexact=dia_semana_nome)
+        dia_semana_obj = get_object_or_404(
+            DiaSemana, nome__iexact=dia_semana_nome)
         rotas = RotaViagem.objects.filter(
             origem__icontains=origem,
             destino__icontains=destino,
@@ -264,6 +298,8 @@ def pesquisa(request):
             except ValueError:
                 return JsonResponse({'error': 'Erro ao processar a resposta da API'})
     return render(request, 'pesquisa.html')
+
+
 def obter_coordenadas(endereco, api_key):
     url = f'https://api.tomtom.com/search/2/geocode/{endereco}.json?key={api_key}'
     response = requests.get(url)
@@ -279,6 +315,8 @@ def obter_coordenadas(endereco, api_key):
     except ValueError:
         pass
     return None, None
+
+
 def calcular_rota(lat_origem, lng_origem, lat_destino, lng_destino, api_key):
     url = f'https://api.tomtom.com/routing/1/calculateRoute/{lat_origem},{lng_origem}:{lat_destino},{lng_destino}/json?key={api_key}'
     response = requests.get(url)
@@ -297,6 +335,8 @@ def calcular_rota(lat_origem, lng_origem, lat_destino, lng_destino, api_key):
             return None, None, None
     except ValueError:
         return None, None, None
+
+
 def resultados0(request):
     origem = request.GET.get('end_inicial')
     destino = request.GET.get('end_final')
@@ -327,8 +367,10 @@ def resultados0(request):
         'lat_origem': lat_origem,
         'lng_origem': lng_origem,
         'lat_destino': lat_destino,
-        'lng_destino': lng_destino,}
+        'lng_destino': lng_destino, }
     return render(request, 'resultados0.html', context)
+
+
 def rotas_por_motorista(request, motorista_id):
     try:
         motorista = Motorista.objects.get(id=motorista_id)
@@ -337,6 +379,8 @@ def rotas_por_motorista(request, motorista_id):
         return render(request, 'rotas.html', context)
     except Motorista.DoesNotExist:
         return render(request, 'erro.html')
+
+
 @login_required(login_url='login/passageiro')
 def resultados1(request):
     origem = request.GET.get('end_inicial')
@@ -353,7 +397,12 @@ def resultados1(request):
     for rota in rotas:
         print(rota.origem, rota.destino)
         nome_motorista = rota.motorista.nome_preferencia
-        mensagem = f"Olá, {nome_motorista}. Eu sou {nome_passageiro} e estou usando o TokenTravel para reservar um assento!"
+        nome_origem = rota.origem
+        nome_destino = rota.destino
+        hora_partida = rota.horario_ida
+        valor_rota = rota.preco
+        tipo_veiculo = rota.tipo_veiculo
+        mensagem = f"Olá, {nome_motorista}. Me chamo {nome_passageiro}, gostaria de saber mais informações e meios de pagamento da rota: {nome_origem}/{nome_destino}, saindo às {hora_partida} e valor de R$ {valor_rota} de {tipo_veiculo}! Esta mensagem foi criada através da Aplicação TokenTravel!"
         phone_number = rota.motorista.telefone
         lat_origem, lng_origem = obter_coordenadas(origem, api_key)
         lat_destino, lng_destino = obter_coordenadas(destino, api_key)
@@ -375,14 +424,18 @@ def resultados1(request):
             'lat_origem': lat_origem,
             'lng_origem': lng_origem,
             'lat_destino': lat_destino,
-            'lng_destino': lng_destino,})
+            'lng_destino': lng_destino, })
     if not context['rotas']:
         return render(request, 'resultados1.html')
     return render(request, 'resultados1.html', context)
+
+
 @login_required(login_url='login/motorista')
 def pagina_motorista(request):
     exibir_turu = True
     return render(request, 'pagina_motorista.html', {'exibir_turu': exibir_turu})
+
+
 @login_required(login_url='login/passageiro')
 def pagina_passageiro(request):
     exibir_foto = True
