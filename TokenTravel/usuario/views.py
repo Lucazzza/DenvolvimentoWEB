@@ -16,7 +16,9 @@ django.setup()
 
 
 def cadastro_motorista(request):
-    if request.method == 'POST':
+    password = request.POST.get('senha')
+    confirmar_senha = request.POST.get('confirmar_senha')
+    if request.method == 'POST' and password == confirmar_senha:
         username = request.POST.get('username')
         nome_completo = request.POST.get('nome_completo')
         nome_preferencia = request.POST.get('nome_preferencia')
@@ -62,11 +64,14 @@ def cadastro_motorista(request):
         assign_role(novo_motorista, 'motorista')
         messages.success(request, 'Cadastro realizado com sucesso!')
         return redirect(login_motorista)
-    return render(request, 'cadastro_motoristas.html')
+    else:
+        return render(request, 'cadastro_motoristas.html')
 
 
 def cadastro_passageiro(request):
-    if request.method == 'POST':
+    password = request.POST.get('senha')
+    confirmar_senha = request.POST.get('confirmar_senha')
+    if request.method == 'POST' and password == confirmar_senha:
         username = request.POST.get('username')
         nome_completo = request.POST.get('nome_completo')
         nome_preferencia = request.POST.get('nome_preferencia')
@@ -104,7 +109,8 @@ def cadastro_passageiro(request):
         assign_role(novo_passageiro, 'passageiro')
         messages.success(request, 'Cadastro realizado com sucesso!')
         return redirect(login_passageiro)
-    return render(request, 'cadastro_usuarios.html')
+    else:
+        return render(request, 'cadastro_usuarios.html')
 
 
 def login_motorista(request):
