@@ -149,3 +149,22 @@ form#buscador button {
 .navbar ul li a:hover {
     background-color: #e5e5e5
 }
+
+
+
+/* Estilizar os itens da lista de sugestões para origem e destino */
+#autocompleteOrigem .autocomplete-result-list li {
+    color: rgb(0, 0, 0);
+    border: 1px solid rgb(0, 0, 0);
+    background-color: white;
+    list-style: none;
+    border-radius: 5px;
+}
+
+#autocompleteDestino .autocomplete-result-list li {
+    color: rgb(0, 0, 0);
+    border: 1px solid rgb(0, 0, 0);
+    background-color: white;
+    list-style: none;
+    border-radius: 5px;
+}

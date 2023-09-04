@@ -10,16 +10,20 @@
                     <h4>PESQUISAR ROTA</h4>
                     <form action="{% url 'resultados1' %}" method="get">
                         {% csrf_token %}
-                        <div class="col-md-12">
+                        <div id="autocompleteOrigem" class="col-md-12">
                             <label class="form-label" for="end_inicial">Endereço de Origem:</label>
                             <div class="col-10 mx-auto">
-                                <input type="text" class="form-control" id="end_inicial" name="end_inicial" placeholder="Ex: Ananindeua" required>
+                                <input type="text" class="form-control" id="end_inicial" name="end_inicial"
+                                    placeholder="Ex: Capitão Poço, Pará, Brasil" required>
+                                <ul class="autocomplete-result-list" style="max-width: 200px; overflow-x: auto;"></ul>
                             </div>
                         </div>
-                        <div class="col-md-12">
+                        <div id="autocompleteDestino" class="col-md-12">
                             <label class="form-label" for="end_final">Endereço de Destino:</label>
                             <div class="col-10 mx-auto">
-                                <input type="text" class="form-control" id="end_final" name="end_final" placeholder="Ex: Salinópolis" required>
+                                <input type="text" class="form-control" id="end_final" name="end_final"
+                                    placeholder="Ex: Capanema, Pará, Brasil" required>
+                                <ul class="autocomplete-result-list" style="max-width: 200px; overflow-x: auto;"></ul>
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -37,7 +41,8 @@
                             </div>
                         </div>
                         <div class="col-auto mx-auto mt-2">
-                            <button type="submit" id="liveAlertBtn" class="botao-login btn btn-success" data-bs-toggle="modal" data-bs-target="#loadingModal">Pesquisar</button>
+                            <button type="submit" id="liveAlertBtn" class="botao-login btn btn-success"
+                                data-bs-toggle="modal" data-bs-target="#loadingModal">Pesquisar</button>
                         </div>
                     </form>
                 </div>
