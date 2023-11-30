@@ -58,12 +58,12 @@
                             Login
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'login_passageiro' %}">Para passageiros</a></li>
-                            <li><a class="dropdown-item" href="{% url 'login_motorista' %}">Para motoristas</a></li>
+                            <li><a class="dropdown-item" href="{% url 'login_passageiro' %}">P/ Passageiros</a></li>
+                            <li><a class="dropdown-item" href="{% url 'login_motorista' %}">P/ Motoristas</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'cadastro_passageiro' %}"><strong>Cadastrar</strong></a>
+                        <a class="nav-link" href="{% url 'cadastro_passageiro' %}">Cadastrar</a>
                     </li>
                 </ul>
             </div>
@@ -104,6 +104,7 @@
         </div>
     </div>
 </section>
+
 {% endblock %}
 {% endif %}
 {% endblock %}
